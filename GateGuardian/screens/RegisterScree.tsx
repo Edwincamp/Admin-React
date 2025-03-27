@@ -3,9 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
+// Definir los tipos de estado para email y password
 const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const navigation = useNavigation();
 
   return (
@@ -19,8 +20,20 @@ const LoginScreen = () => {
       <View style={styles.formContainer}>
         <Text style={styles.title}>Bienvenido a GateGuardian</Text>
 
-        <TextInput style={styles.input} placeholder="Usuario o correo electrónico" keyboardType="email-address" value={email} onChangeText={setEmail} />
-        <TextInput style={styles.input} placeholder="Contraseña" secureTextEntry value={password} onChangeText={setPassword} />
+        <TextInput 
+          style={styles.input} 
+          placeholder="Usuario o correo electrónico" 
+          keyboardType="email-address" 
+          value={email} 
+          onChangeText={setEmail} 
+        />
+        <TextInput 
+          style={styles.input} 
+          placeholder="Contraseña" 
+          secureTextEntry 
+          value={password} 
+          onChangeText={setPassword} 
+        />
 
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Iniciar sesión</Text>

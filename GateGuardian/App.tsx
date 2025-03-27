@@ -1,12 +1,17 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import RegisterScreen from './screens/RegisterScreen';
+import RegisterScreen from './screens/LoginScreen';
 import LoginScreen from './screens/LoginScreen';
 
-const Stack = createStackNavigator();
+export type RootStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
 
-export default function App() {
+const Stack = createStackNavigator<RootStackParamList>();
+
+const App: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
@@ -15,4 +20,5 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
+export default App;
