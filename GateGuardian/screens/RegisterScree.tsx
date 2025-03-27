@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
 
-// Definir los tipos de estado para email y password
 const LoginScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -13,7 +12,10 @@ const LoginScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.logo}>
-          {/* <Image source={require('../assets/logo.png')} style={{ width: 80, height: 80 }} /> */}
+          <Image 
+            source={require('../images/logo.jpg')} // Ruta correcta al logo
+            style={{ width: 120, height: 120, resizeMode: 'contain' }} // Ajusta el tamaño y el estilo del logo
+          />
         </View>
       </View>
 
