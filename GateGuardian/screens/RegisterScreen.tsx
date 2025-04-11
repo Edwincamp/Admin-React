@@ -1,34 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { loginUser } from '../services/api'; // Importa la función de login desde api.ts
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { registerUser } from '../services/api'; // Importa la función de registro desde api.ts
 
 type RootStackParamList = {
   Register: undefined;
   Login: undefined;
-  AccessLog: undefined;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type RegisterScreenProps = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
-const LoginScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+const RegisterScreen = ({ navigation }: RegisterScreenProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegisterPress = () => {
-    navigation.navigate('Register');
-  };
-
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Por favor ingresa tu correo y contraseña');
+  const handleRegister = async () => {
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
 
-    if (!email.includes('@') || !email.includes('.')) {
-      Alert.alert('Error', 'Por favor ingresa un correo electrónico válido');
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
 
@@ -38,11 +32,15 @@ const LoginScreen = () => {
     }
 
     try {
-      const result = await loginUser(email, password); // Llama a la API para iniciar sesión
-      Alert.alert('Éxito', 'Inicio de sesión exitoso');
-      navigation.navigate('AccessLog'); // Navega a la pantalla de registros de acceso
+      const result = await registerUser(email, password); // Llama a la API para registrar el usuario
+      Alert.alert('Éxito', 'Usuario creado correctamente', [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Login'), // Navega a la pantalla de inicio de sesión
+        },
+      ]);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo iniciar sesión');
+      Alert.alert('Error', error.message || 'No se pudo registrar el usuario');
     }
   };
 
@@ -59,34 +57,43 @@ const LoginScreen = () => {
 
       {/* Formulario */}
       <View style={styles.form}>
-        <Text style={styles.title}>Bienvenido</Text>
+        <Text style={styles.title}>Crea tu cuenta</Text>
 
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
           placeholderTextColor="#A0AEC0"
-          autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
           placeholderTextColor="#A0AEC0"
-          secureTextEntry={true}
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar contraseña"
+          placeholderTextColor="#A0AEC0"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Registrar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleRegisterPress}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.link}>
-            ¿No tienes cuenta? <Text style={styles.linkHighlight}>Crea una</Text>
+            ¿Ya tienes cuenta? <Text style={styles.linkHighlight}>Inicia sesión</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -160,9 +167,9 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Alineado al centro
   },
   linkHighlight: {
-    color: '#3182CE', // Color azul para "Crea una"
+    color: '#3182CE', // Color azul para "Inicia sesión"
     fontWeight: 'bold',
   },
 });
 
-export { LoginScreen };
+export default RegisterScreen;
